@@ -11,7 +11,7 @@ export default function() {
         heatScale = d3.scaleQuantize().domain([0, 1]).range(['#5458A2', '#6689BB', '#FADC97', '#F08460', '#B02B48']),
         hexRadiusScale = d3.scaleQuantize().domain([0, 2]).range(hexRadiusValues),
         toolTips = false,
-        hexbin = d3_hexbin.hexbin()
+        hexbin = d3.hexbin()
                 .radius(1.2)
                 .x(function(d) { return d.key[0]; }) // accessing the x, y coords from the nested json key
                 .y(function(d) { return yScale(d.key[1]); });        

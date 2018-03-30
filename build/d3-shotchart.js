@@ -213,7 +213,7 @@
   var activeDisplay = "scatter";
   var activeTheme = "day";
   // SCALES USED TO INVERT COURT Y COORDS AND MAP SHOOTING PERCENTAGES OF BINS TO A FILL COLOR 
-  var yScale$1$1 = d3.scaleLinear().domain([0, 47]).rangeRound([47, 0]);
+  var yScale$1 = d3.scaleLinear().domain([0, 47]).rangeRound([47, 0]);
   var percentFormatter = d3.format(".2%");
 
   function shots() {
@@ -226,7 +226,7 @@
           hexbin = d3.hexbin()
                   .radius(1.2)
                   .x(function(d) { return d.key[0]; }) // accessing the x, y coords from the nested json key
-                  .y(function(d) { return yScale$1$1(d.key[1]); });        
+                  .y(function(d) { return yScale$1(d.key[1]); });        
       
       var _nestShotsByLocation = function(data) {
           var nestedData = d3.nest()

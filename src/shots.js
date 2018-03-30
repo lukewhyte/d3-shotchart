@@ -55,7 +55,7 @@ export default function() {
             .classed("isSpur", function (d) { return !!d.isSpur })
             .classed(d.playerID + i, true)
             .attr("cx", function(d) { return d.x; })
-            .attr("cy", function(d) { return yScale$1(d.y); })
+            .attr("cy", function(d) { return yScale(d.y); })
             .attr("r", .5)
             .on('mouseover', function(d) { if (toolTips) {tool_tip.show(d);} })
             .on('mouseout', function(d) { if (toolTips) {tool_tip.hide(d);} });
@@ -70,7 +70,7 @@ export default function() {
             .classed("miss", true)
             .classed("isSpur", function (d) { return !!d.isSpur })
             .classed(d.playerID + i, true)
-            .attr("transform", function(d) { return "translate(" + d.x + "," + yScale$1(d.y) + ") rotate(-45)"; })
+            .attr("transform", function(d) { return "translate(" + d.x + "," + yScale(d.y) + ") rotate(-45)"; })
             .attr("d", d3.symbol().type(d3.symbolCross).size(.5))
             .on('mouseover', function(d) { if (toolTips) {tool_tip.show(d);} })
             .on('mouseout', function(d) { if (toolTips) {tool_tip.hide(d);} });

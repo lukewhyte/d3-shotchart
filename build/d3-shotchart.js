@@ -213,7 +213,7 @@
   var activeDisplay = "scatter";
   var activeTheme = "day";
   // SCALES USED TO INVERT COURT Y COORDS AND MAP SHOOTING PERCENTAGES OF BINS TO A FILL COLOR 
-  var yScale$1 = d3.scaleLinear().domain([0, 47]).rangeRound([47, 0]);
+  var yScale$1$1 = d3.scaleLinear().domain([0, 47]).rangeRound([47, 0]);
   var percentFormatter = d3.format(".2%");
 
   function shots() {
@@ -226,7 +226,7 @@
           hexbin = d3.hexbin()
                   .radius(1.2)
                   .x(function(d) { return d.key[0]; }) // accessing the x, y coords from the nested json key
-                  .y(function(d) { return yScale$1(d.key[1]); });        
+                  .y(function(d) { return yScale$1$1(d.key[1]); });        
       
       var _nestShotsByLocation = function(data) {
           var nestedData = d3.nest()
@@ -257,6 +257,36 @@
           return data;
       };
       
+      function makeMadeShots (shot, tool_tip, d, i) {
+          d3.select(shot).selectAll("." + d.playerID + i)
+                .data([d])
+              .enter()
+              .append("circle")
+              .classed("shot", true)
+              .classed("make", true)
+              .classed("isSpur", function (d) { return !!d.isSpur })
+              .classed(d.playerID + i, true)
+              .attr("cx", function(d) { return d.x; })
+              .attr("cy", function(d) { return yScale$1(d.y); })
+              .attr("r", .5)
+              .on('mouseover', function(d) { if (toolTips) {tool_tip.show(d);} })
+              .on('mouseout', function(d) { if (toolTips) {tool_tip.hide(d);} });
+      }
+
+      function makeMissedShots (shot, tool_tip, d, i) {
+          d3.select(shot).selectAll("." + d.playerID + i)
+                .data([d])
+              .enter()
+              .append("path")
+              .classed("shot", true)
+              .classed("miss", true)
+              .classed("isSpur", function (d) { return !!d.isSpur })
+              .classed(d.playerID + i, true)
+              .attr("transform", function(d) { return "translate(" + d.x + "," + yScale$1(d.y) + ") rotate(-45)"; })
+              .attr("d", d3.symbol().type(d3.symbolCross).size(.5))
+              .on('mouseover', function(d) { if (toolTips) {tool_tip.show(d);} })
+              .on('mouseout', function(d) { if (toolTips) {tool_tip.hide(d);} });
+      }
 
       function shots(selection){
 
@@ -291,22 +321,13 @@
                       shotsGroup.call(tool_tip);
                   }
 
-                  shots.enter()
-                      .append("circle")
-                      .classed("shot", true)
-                      .classed("make", function(d){
-                            return d.shot_made_flag === 1; // used to set fill color to green if it's a made shot
-                      })
-                      .classed("miss", function(d){
-                            return d.shot_made_flag === 0; // used to set fill color to red if it's a miss
-                      })
-                      .attr("cx", function(d) { return d.x; })
-                      .attr("cy", function(d) { return yScale$1(d.y); })
-                      .attr("r", 0)
-                      .on('mouseover', function(d) { if (toolTips) {tool_tip.show(d);} })
-                      .on('mouseout', function(d) { if (toolTips) {tool_tip.hide(d);} })
-                      .transition().duration(1000)
-                      .attr("r", .5);
+                  shots.enter().each(function (d, i) {
+                      if (d.shot_made_flag) {
+                          makeMadeShots(this, tool_tip, d, i);
+                      } else {
+                          makeMissedShots(this, tool_tip, d, i);
+                      }
+                  });
                   
               }
               else if (activeDisplay === "hexbin"){
